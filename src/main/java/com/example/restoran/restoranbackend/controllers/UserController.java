@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/api/users")
@@ -51,6 +52,31 @@ public class UserController {
     }
   }
 
+  @GetMapping("/username/{username}")
+  public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
+    try {
+      User user = userService.getUserByUsername(username);
+      return ResponseEntity.ok(user);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+  }
+
+  @GetMapping("/current")
+  public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    String username = authentication.getName();
+
+    try {
+      User user = userService.getUserByUsername(username);
+
+      user.setPassword(null);
+
+      return ResponseEntity.ok(user);
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+    }
+  }
+
   @PutMapping("/{username}")
   public ResponseEntity<?> updateUserInfo(@PathVariable String username, @RequestBody User updatedUserInfo) {
     try {
@@ -70,11 +96,21 @@ public class UserController {
     }
   }
 
-  @GetMapping("/username/{username}")
-  public ResponseEntity<?> getUserByUsername(@PathVariable String username) {
+  @PatchMapping("/update/{username}")
+  public ResponseEntity<?> updateUserName(@PathVariable String username, @RequestBody User updatedUser) {
     try {
-      User user = userService.getUserByUsername(username);
-      return ResponseEntity.ok(user);
+      User existingUser = userService.getUserByUsername(username);
+
+      if (updatedUser.getFirstname() != null) {
+        existingUser.setFirstname(updatedUser.getFirstname());
+      }
+      if (updatedUser.getLastname() != null) {
+        existingUser.setLastname(updatedUser.getLastname());
+      }
+
+      existingUser = userService.updateUserInfo(existingUser);
+
+      return ResponseEntity.ok(existingUser);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
