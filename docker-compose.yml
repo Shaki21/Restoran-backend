@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/restoran-java
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: brunoante
+
+  frontend:
+    build:
+      context: ../Restoran-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: restoran-java
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: brunoante
+    ports:
+      - "5432:5432"
