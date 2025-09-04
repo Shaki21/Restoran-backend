@@ -48,7 +48,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://localhost:3000"));  // Dozvoli samo tvoj frontend
+    configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://localhost:3000", "http://129.152.25.157:3000"));  // Dozvoli samo tvoj frontend
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);  // Ako koristiš JWT u cookie-ju
