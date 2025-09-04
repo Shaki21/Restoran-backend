@@ -34,11 +34,11 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/login").permitAll()
-                    .requestMatchers("/users/**").hasRole("USER")  // Provjerava da li korisnik ima authority "ROLE_USER"
+                    .requestMatchers("/users/**").hasRole("USER")
                     .anyRequest().permitAll()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .userDetailsService(userService); // Registriramo našu UserService kao UserDetailsService
+            .userDetailsService(userService);
 
     http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
